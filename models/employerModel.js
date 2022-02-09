@@ -1,0 +1,10 @@
+/*
+Company Name
+Address
+ZIP
+City
+telephone
+email
+contact person
+job ad
+*/
