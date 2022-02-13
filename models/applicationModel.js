@@ -14,7 +14,7 @@ const applicationSchema = mongoose.Schema({
     salary: {
         type: String,
         required: false,
-        default: ""
+        default: "N/A"
     },
     remote: {
         type: Boolean,
