@@ -34,7 +34,18 @@ const employerSchema = mongoose.Schema({
     mobile: {
         type: String, 
         required: false
-    }
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'
+    },
+    applications: [{
+        type: mongoose.Schema.Types.ObjectId,
+        required: false,
+        ref: 'Application',
+        default: null
+    }]
 }, {
     timestamps: true
 })
