@@ -97,7 +97,8 @@ const updateUserProfile = asyncHandler(async (req, res) => {
         user.address.house_no = req.body.address.house_no || user.address.house_no
         user.address.city = req.body.address.city || user.address.city
         user.address.zip_code = req.body.address.zip_code || user.address.zip_code
-        user.email = req.body.email || user.email
+        user.address.country = req.body.address.country || user.address.country
+        user.mobile = req.body.mobile || user.mobile
         user.telephone = req.body.telephone || user.telephone
         user.email = req.body.email || user.email
 
@@ -132,7 +133,7 @@ const deleteUser = asyncHandler(async (req, res) => {
         res.json({message: 'User successfully removed'})
     } else {
         res.status(404)
-        throw new Error('USer not found!')
+        throw new Error('User not found!')
     }
 })
 
