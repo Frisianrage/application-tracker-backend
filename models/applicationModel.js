@@ -55,9 +55,8 @@ const applicationSchema = mongoose.Schema({
         },
     },
     coverletter: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         required: false,
-        ref: 'File',
         default: null
     },
     status: {

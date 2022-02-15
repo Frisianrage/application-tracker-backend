@@ -52,9 +52,8 @@ const userSchema = mongoose.Schema({
         required: false
     },
     resume: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         required: false,
-        ref: 'File',
         default: null
     },
     applications: [{

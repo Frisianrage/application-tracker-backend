@@ -101,6 +101,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
         user.mobile = req.body.mobile || user.mobile
         user.telephone = req.body.telephone || user.telephone
         user.email = req.body.email || user.email
+        user.resume = req.body.resume || user.resume
 
         if(req.body.password) {
             user.password = req.body.password
@@ -199,5 +200,24 @@ const updateUser = asyncHandler(async (req, res) => {
     }
 })
 
+// @desc    add new resume
+// @route   PUT /api/users/:id/resume
+// @access  Private
 
-module.exports = {registerNewUser, loginUser, getUserProfile, updateUserProfile, deleteUser, getUserById, updateUser, getAllUsers}
+const addNewResume = asyncHandler( async (req, res) => {
+    const user = await User.findById(req.user._id)
+   
+    if(user) {
+        user.resume = req.body.resume
+
+        const updatedUser = user.save()
+
+        res.json(updatedUser)
+    } else {
+        res.status(400)
+        throw new Error('Invalid file data!')
+    } 
+})
+
+
+module.exports = {registerNewUser, loginUser, getUserProfile, updateUserProfile, deleteUser, getUserById, updateUser, getAllUsers, addNewResume}

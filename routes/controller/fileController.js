@@ -1,4 +1,4 @@
-const File = require('../../models/fileModel')
+const File = require('../../models/fileModel.js')
 const User = require('../../models/userModel')
 const asyncHandler = require('express-async-handler')
 
