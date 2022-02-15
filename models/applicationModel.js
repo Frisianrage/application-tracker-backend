@@ -35,8 +35,8 @@ const applicationSchema = mongoose.Schema({
                 required: false 
                 }
     },
-    Employer: {
-        Employer: {
+    employer: {
+        employer: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
             ref: 'Employer',
@@ -69,6 +69,12 @@ const applicationSchema = mongoose.Schema({
         required: false,
         default: ""
     },
+    applicant: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User',
+        default: null
+    }
 }, {
     timestamps: true
 })

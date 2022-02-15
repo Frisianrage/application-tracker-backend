@@ -127,7 +127,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 // @access  Private /Admin
 
 const deleteUser = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.body._id)
+    const user = await User.findById(req.params.id)
 
     if(user) {
         await user.remove()
@@ -143,7 +143,7 @@ const deleteUser = asyncHandler(async (req, res) => {
 // @access  Private / Admin
 
 const getUserById = asyncHandler(async(req, res) => {
-    const user = await User.findById(req.body._id)
+    const user = await User.findById(req.params.id)
 
     if(user) {
         res.json(user)
@@ -158,7 +158,7 @@ const getUserById = asyncHandler(async(req, res) => {
 // @access  Private / Admin
 
 const getAllUsers = asyncHandler(async(req, res) => {
-    const users = User.find({})
+    const users = await User.find({})
     res.json({users})
 })
 
@@ -208,7 +208,8 @@ const addNewResume = asyncHandler( async (req, res) => {
     const user = await User.findById(req.user._id)
    
     if(user) {
-        user.resume = req.body.resume
+        user.resume.content = req.body.resume
+        user.resume.date = Date.now()
 
         const updatedUser = user.save()
 

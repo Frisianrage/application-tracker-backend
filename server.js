@@ -3,6 +3,7 @@ const dotenv = require('dotenv')
 const connectDB = require('./config/db')
 const userRoutes = require('./routes/userRoutes')
 const employerRoutes = require('./routes/employerRoutes')
+const applicationRoutes = require('./routes/applicationRoutes')
 
 dotenv.config()
 connectDB()
@@ -18,5 +19,6 @@ app.get('/', (req, res) => {
 
 app.use('/api/users', userRoutes)
 app.use('/api/employers', employerRoutes)
+app.use('/api/applications', applicationRoutes)
 
 app.listen(PORT, console.log(`Server is running in port ${PORT}`))
