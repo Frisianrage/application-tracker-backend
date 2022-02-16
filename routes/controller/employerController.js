@@ -1,6 +1,7 @@
 const Employer = require('../../models/employerModel')
 const asyncHandler = require('express-async-handler')
 
+
 // @desc    Create new employer
 // @route   POST /api/employers
 // @access  Private
@@ -31,11 +32,12 @@ const createNewEmployer = asyncHandler( async (req, res) => {
     }
 })
 
+
 // @desc    Get all employer 
 // @route   GET /api/employers
 // @access  Private
 
-const getAllEmployer = asyncHandler(async (req, res) => {
+const getAllEmployer = asyncHandler( async (req, res) => {
     const pageSize = 10
     const page = Number(req.query.pageNumber) || 1
 
@@ -52,11 +54,12 @@ const getAllEmployer = asyncHandler(async (req, res) => {
     res.json({employers, page, pages: Math.ceil(count / pageSize)})
 })
 
+
 // @desc    Update employer 
 // @route   PUT /api/employers/:id
 // @access  Private
 
-const updateEmployerProfile = asyncHandler(async (req, res) => {
+const updateEmployerProfile = asyncHandler( async (req, res) => {
     const employer = await Employer.findById(req.params.id)
 
     if(employer) {
@@ -82,11 +85,12 @@ const updateEmployerProfile = asyncHandler(async (req, res) => {
     }
 })
 
+
 // @desc    Delete employer 
 // @route   PUT /api/employers/:id
 // @access  Private /Admin
 
-const deleteEmployer = asyncHandler(async (req, res) => {
+const deleteEmployer = asyncHandler( async (req, res) => {
     const employer = await Employer.findById(req.params.id)
 
     if(employer) {
@@ -98,11 +102,12 @@ const deleteEmployer = asyncHandler(async (req, res) => {
     }
 })
 
+
 // @desc    Get employer by ID
 // @route   GET /api/employers/:id
 // @access  Private / Admin
 
-const getEmployerById = asyncHandler(async (req, res) => {
+const getEmployerById = asyncHandler( async (req, res) => {
     const employer = await Employer.findById(req.params.id)
 
     if(employer) {
@@ -112,5 +117,6 @@ const getEmployerById = asyncHandler(async (req, res) => {
         throw new Error('Employer not found!')
     }
 })
+
 
 module.exports = {createNewEmployer, getAllEmployer, getEmployerById, updateEmployerProfile, deleteEmployer}

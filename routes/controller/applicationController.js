@@ -2,6 +2,7 @@ const Application = require('../../models/applicationModel')
 const User = require('../../models/userModel')
 const asyncHandler = require('express-async-handler')
 
+
 // @desc    Create new application
 // @route   POST /api/applications
 // @access  Private
@@ -54,11 +55,12 @@ const createNewApplication = asyncHandler( async (req, res) => {
     }
 })
 
+
 // @desc    Get all my applications 
 // @route   GET /api/applications/summary
 // @access  Private
 
-const getAllMyApplications = asyncHandler(async (req, res) => {
+const getAllMyApplications = asyncHandler( async (req, res) => {
     const applications = await Application.find({user: req.user._id})
     
     if(applications) {
@@ -69,11 +71,12 @@ const getAllMyApplications = asyncHandler(async (req, res) => {
     }
 })
 
+
 // @desc    Get single application 
 // @route   GET /api/applications/:id
 // @access  Private
 
-const getApplicationById = asyncHandler(async(req, res) => {
+const getApplicationById = asyncHandler( async (req, res) => {
     const application = await Application.findById(req.params.id)
 
     if(application) {
@@ -83,11 +86,13 @@ const getApplicationById = asyncHandler(async(req, res) => {
         throw new Error('Application not found')
     }
 })
+
+
 // @desc    Update application general
 // @route   PUT /api/applications/:id
 // @access  Private
 
-const updateApplication = asyncHandler(async (req, res) => {
+const updateApplication = asyncHandler( async (req, res) => {
     const {jobtitle, jobdescription, salary, remote, location: {city, state, country}, employer: {employer, contactperson: {name, email, phone}}, coverletter, status, source} = req.body
     const application = await Application.findById(req.params.id)
 
@@ -117,11 +122,12 @@ const updateApplication = asyncHandler(async (req, res) => {
     }      
 })
 
+
 // @desc    Update application status
 // @route   PUT /api/applications/:id/status
 // @access  Private
 
-const statusUpdate = asyncHandler(async (req, res) => {
+const statusUpdate = asyncHandler( async (req, res) => {
     const {status} = req.body
     const application = await Application.findById(req.params.id)
 
@@ -137,11 +143,12 @@ const statusUpdate = asyncHandler(async (req, res) => {
     }
 })
 
+
 // @desc    Delete application 
 // @route   PUT /api/applications/:id
 // @access  Private /Admin
 
-const deleteApplication = asyncHandler(async (req, res) => {
+const deleteApplication = asyncHandler( async (req, res) => {
     const application = await Application.findById(req.params.id)
     const user = await User.findById(req.user._id)
 
@@ -159,6 +166,7 @@ const deleteApplication = asyncHandler(async (req, res) => {
         throw new Error('Application not found!')
     }
 })
+
 
 // @desc    add new coverletter
 // @route   PUT /api/applications/:id/coverletter
@@ -178,5 +186,6 @@ const addNewCoverletter = asyncHandler( async (req, res) => {
         throw new Error('Invalid file data!')
     } 
 })
+
 
 module.exports = {createNewApplication, getAllMyApplications, getApplicationById, deleteApplication, updateApplication, statusUpdate, addNewCoverletter}
