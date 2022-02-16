@@ -87,9 +87,55 @@ const getApplicationById = asyncHandler(async(req, res) => {
 // @route   PUT /api/applications/:id
 // @access  Private
 
+const updateApplication = asyncHandler(async (req, res) => {
+    const {jobtitle, jobdescription, salary, remote, location: {city, state, country}, employer: {employer, contactperson: {name, email, phone}}, coverletter, status, source} = req.body
+    const application = await Application.findById(req.params.id)
+
+    if(application) {
+        application.jobtitle = jobtitle || application.jobtitle, 
+        application.jobdescription = jobdescription || application.jobdescription, 
+        application.salary = salary || application.salary, 
+        application.remote = remote || application.remote, 
+        application.location.city = city || application.location.city,
+        application.location.state = state || application.location.state,
+        application.location.country = country || application.location.country
+        application.employer.employer = employer || application.employer.employer,
+        application.contactperson.name = name || application.contactperson.name,
+        application.contactperson.email = email || application.contactperson.email,
+        application.contactperson.phone = phone || application.contactperson.phone,
+        application.coverletter = coverletter || application.coverletter, 
+        application.status = status || application.status, 
+        application.source = source || application.source
+
+        const updatedApplication = await application.save()
+
+        res.json(updatedApplication)
+      
+    } else {
+        res.status(404)
+        throw new Error('Application not found!')
+    }      
+})
+
 // @desc    Update application status
 // @route   PUT /api/applications/:id/status
 // @access  Private
+
+const statusUpdate = asyncHandler(async (req, res) => {
+    const {status} = req.body
+    const application = await Application.findById(req.params.id)
+
+    if(application) {
+        application.status = status
+
+        const updatedApplication = await application.save()
+
+        res.json(updatedApplication)
+    } else {
+        res.status(404)
+        throw new Error('Application not found')
+    }
+})
 
 // @desc    Delete application 
 // @route   PUT /api/applications/:id
@@ -114,4 +160,23 @@ const deleteApplication = asyncHandler(async (req, res) => {
     }
 })
 
-module.exports = {createNewApplication, getAllMyApplications, getApplicationById, deleteApplication}
+// @desc    add new coverletter
+// @route   PUT /api/applications/:id/coverletter
+// @access  Private
+
+const addNewCoverletter = asyncHandler( async (req, res) => {
+    const application = await Application.findById(req.params.id)
+   
+    if(application) {
+        application.coverletter = req.body.coverletter
+
+        const updatedApplication = application.save()
+
+        res.json(updatedApplication)
+    } else {
+        res.status(400)
+        throw new Error('Invalid file data!')
+    } 
+})
+
+module.exports = {createNewApplication, getAllMyApplications, getApplicationById, deleteApplication, updateApplication, statusUpdate, addNewCoverletter}
