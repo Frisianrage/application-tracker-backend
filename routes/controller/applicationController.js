@@ -61,13 +61,24 @@ const createNewApplication = asyncHandler( async (req, res) => {
 // @access  Private
 
 const getAllMyApplications = asyncHandler( async (req, res) => {
-    const applications = await Application.find({user: req.user._id})
     
-    if(applications) {
-        res.json({applications})
-    } else {
-        res.status(404)
-        throw new Error('No applications found!')
+    try {
+        const user = await User.findById(req.user._id).select('-password').populate("applications").populate( { path: 'applications', populate: { path: 'employer', populate: 'employer' } })
+
+        if(user) {
+            res.json({
+                userid: user._id,
+                firstname: user.firstname,
+                isAdmin: user.isAdmin,
+                applications: user.applications
+            })
+        } else {
+            res.status(404)
+            throw new Error('User not found!')
+        }
+    } catch (error) {
+        res.status(400)
+        throw new Error('Invalid request!')
     }
 })
 
@@ -77,8 +88,9 @@ const getAllMyApplications = asyncHandler( async (req, res) => {
 // @access  Private
 
 const getApplicationById = asyncHandler( async (req, res) => {
-    const application = await Application.findById(req.params.id)
-
+    console.log(req.params)
+    const application = await Application.findById(req.params.id).populate( { path: 'employer', populate: 'employer' })
+    console.log(application)
     if(application) {
         res.json(application)
     } else {

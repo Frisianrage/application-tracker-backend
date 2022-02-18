@@ -6,7 +6,7 @@ const router = express.Router()
 
 router.route('/').post(registerNewUser).get(protect, admin, getAllUsers)
 router.post('/login', loginUser)
-router.route('/profile').get(protect, getUserProfile).post(protect, updateUserProfile)
+router.route('/profile').get(protect, getUserProfile).put(protect, updateUserProfile)
 router.route('/:id').delete(protect, admin, deleteUser).get(protect, admin, getUserById).put(protect, admin, updateUser)
 router.post('/:id/resume', protect, addNewResume)
 

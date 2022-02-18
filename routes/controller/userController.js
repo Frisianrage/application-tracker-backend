@@ -19,7 +19,22 @@ const registerNewUser = asyncHandler( async (req, res) => {
 
     const user = await User.create({
         email,
-        password
+        password,
+        firstname: '',
+        lastname: '',
+        address: {
+            address: '',
+            addressTwo: '',
+            zip_code: '',
+            city: '',
+            country: '',
+        },
+        resume: {
+            content: '',
+            date: ''
+        },
+        mobile: '',
+        telephone: ''
     })
 
     if(user) {
@@ -27,7 +42,7 @@ const registerNewUser = asyncHandler( async (req, res) => {
             id: user._id,
             email: user.email,
             isAdmin: user.isAdmin,
-            token: generateToken(user._id)
+            token: generateToken(user._id, user.firstname, user.email, user.isAdmin)
         })
     } else {
         res.status(400)
@@ -67,15 +82,10 @@ const loginUser = asyncHandler( async (req,res) => {
 const getUserProfile = asyncHandler( async (req, res) => {
     
     try {
-        const user = await User.findById(req.user._id)
+        const user = await User.findById(req.user._id).select('-password').populate("applications")
 
         if(user) {
-            res.json({
-                id: user._id,
-                firstname: user.firstname,
-                email: user.email,
-                isAdmin: user.isAdmin
-            })
+            res.json(user)
         } else {
             res.status(404)
             throw new Error('User not found!')
@@ -93,15 +103,16 @@ const getUserProfile = asyncHandler( async (req, res) => {
 
 const updateUserProfile = asyncHandler( async (req, res) => {
     const user = await User.findById(req.user._id)
+    console.log(req.body)
 
     if(user) {
-        user.firstname = req.body.firstname || user.firstname
-        user.lastname = req.body.lastname || user.lastname
-        user.address.street = req.body.address.street || user.address.street
-        user.address.house_no = req.body.address.house_no || user.address.house_no
-        user.address.city = req.body.address.city || user.address.city
-        user.address.zip_code = req.body.address.zip_code || user.address.zip_code
-        user.address.country = req.body.address.country || user.address.country
+        user.firstname = req.body.firstName || user.firstname
+        user.lastname = req.body.lastName || user.lastname
+        user.address.address = req.body.address || user.address.address
+        user.address.addressTwo = req.body.addressTwo || user.address.addressTwo
+        user.address.city = req.body.city || user.address.city
+        user.address.zip_code = req.body.zipCode || user.address.zip_code
+        user.address.country = req.body.country || user.address.country
         user.mobile = req.body.mobile || user.mobile
         user.telephone = req.body.telephone || user.telephone
         user.email = req.body.email || user.email
@@ -114,11 +125,8 @@ const updateUserProfile = asyncHandler( async (req, res) => {
         const updatedUser = await user.save()
 
         res.json({
-            id: updatedUser._id,
-            firstname: updatedUser.firstname,
-            email: updatedUser.email,
-            isAdmin: updatedUser.isAdmin,
-            token: generateToken(updatedUser._id)
+            user: updatedUser,
+            token: generateToken(updatedUser._id, updatedUser.firstname, updatedUser.email, updatedUser.isAdmin)
         })
     } else {
         res.status(404)
@@ -180,8 +188,8 @@ const updateUser = asyncHandler( async (req, res) => {
     if(user) {
         user.firstname = req.body.firstname || user.firstname
         user.lastname = req.body.lastname || user.lastname
-        user.address.street = req.body.address.street || user.address.street
-        user.address.house_no = req.body.address.house_no || user.address.house_no
+        user.address.address = req.body.address.address || user.address.address
+        user.address.addressTwo = req.body.address.addressTwo || user.address.addressTwo
         user.address.city = req.body.address.city || user.address.city
         user.address.zip_code = req.body.address.zip_code || user.address.zip_code
         user.email = req.body.email || user.email
