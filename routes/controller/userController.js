@@ -218,18 +218,20 @@ const updateUser = asyncHandler( async (req, res) => {
 
 
 // @desc    add new resume
-// @route   PUT /api/users/:id/resume
+// @route   PUT /api/users/profile/resume
 // @access  Private
 
 const addNewResume = asyncHandler( async (req, res) => {
     const user = await User.findById(req.user._id)
-   
+    console.log(user)
     if(user) {
-        user.resume.content = req.body.resume
+        user.resume.content = req.body.base64
         user.resume.date = Date.now()
+        user.resume.name = req.body.name
+        user.resume.type = req.body.type
 
         const updatedUser = user.save()
-
+        console.log(updatedUser)
         res.json(updatedUser)
     } else {
         res.status(400)

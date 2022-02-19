@@ -52,7 +52,17 @@ const userSchema = mongoose.Schema({
         required: false
     },
     resume: {
+        name: {
+            type: String,
+            required: false,
+            default: ""
+        },
         content: {
+            type: String,
+            required: false,
+            default: ""
+        },
+        type: {
             type: String,
             required: false,
             default: ""

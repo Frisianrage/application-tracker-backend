@@ -120,7 +120,7 @@ const updateApplication = asyncHandler( async (req, res) => {
         application.contactperson.name = name || application.contactperson.name,
         application.contactperson.email = email || application.contactperson.email,
         application.contactperson.phone = phone || application.contactperson.phone,
-        application.coverletter = coverletter || application.coverletter, 
+        //application.coverletter = coverletter || application.coverletter, 
         application.status = status || application.status, 
         application.source = source || application.source
 

@@ -55,9 +55,21 @@ const applicationSchema = mongoose.Schema({
         },
     },
     coverletter: {
-        type: String,
-        required: false,
-        default: null
+        name: {
+            type: String,
+            required: false,
+            default: ""
+        },
+        content: {
+            type: String,
+            required: false,
+            default: ""
+        },
+        date: {
+            type: String,
+            required: false,
+            default: ""
+        }
     },
     status: {
         type: String,
