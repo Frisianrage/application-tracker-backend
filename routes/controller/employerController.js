@@ -33,25 +33,27 @@ const createNewEmployer = asyncHandler( async (req, res) => {
 })
 
 
-// @desc    Get all employer 
+// @desc    Get all my employers 
 // @route   GET /api/employers
 // @access  Private
 
-const getAllEmployer = asyncHandler( async (req, res) => {
-    const pageSize = 10
+const getAllMyEmployer = asyncHandler( async (req, res) => {
+    
+    console.log(req.params)
+    /*const pageSize = 10
     const page = Number(req.query.pageNumber) || 1
-
-    const keyword = req.query.keyword ? {
-        name: {
-            $regex: req.query.keyword,
+*/
+    const keyword = req.params.keyword ? {
+        companyname: {
+            $regex: req.params.keyword,
             $options: 'i'
         }
     } : {}
 
-    const employers = await Employer.find({user: req.user._id})
-    const count = employers.length
+    const employers = await Employer.find({user: req.user._id, ...keyword})
+  
 
-    res.json({employers, page, pages: Math.ceil(count / pageSize)})
+    res.json({employers})
 })
 
 
@@ -119,4 +121,4 @@ const getEmployerById = asyncHandler( async (req, res) => {
 })
 
 
-module.exports = {createNewEmployer, getAllEmployer, getEmployerById, updateEmployerProfile, deleteEmployer}
+module.exports = {createNewEmployer, getAllMyEmployer, getEmployerById, updateEmployerProfile, deleteEmployer}

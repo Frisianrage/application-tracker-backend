@@ -7,10 +7,10 @@ const employerSchema = mongoose.Schema({
         default: ""
     },
     address: {
-        street: {type: String,
+        address: {type: String,
                 required: false 
                 },
-        house_no: {type: String,
+        addressTwo: {type: String,
                 required: false 
                 },
         zip_code: {type: String,
