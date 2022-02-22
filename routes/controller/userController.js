@@ -22,7 +22,7 @@ const registerNewUser = asyncHandler( async (req, res) => {
         password,
         firstname: '',
         lastname: '',
-        address: {
+        location: {
             address: '',
             addressTwo: '',
             zip_code: '',
@@ -108,12 +108,12 @@ const updateUserProfile = asyncHandler( async (req, res) => {
     if(user) {
         user.firstname = req.body.firstName || user.firstname
         user.lastname = req.body.lastName || user.lastname
-        user.address.address = req.body.address || user.address.address
-        user.address.addressTwo = req.body.addressTwo || user.address.addressTwo
-        user.address.city = req.body.city || user.address.city
-        user.address.zip_code = req.body.zip_code || user.address.zip_code
-        user.address.state = req.body.state || user.address.state
-        user.address.country = req.body.country || user.address.country
+        user.location.address = req.body.address || user.location.address
+        user.location.addressTwo = req.body.addressTwo || user.location.addressTwo
+        user.location.city = req.body.city || user.location.city
+        user.location.zip_code = req.body.zip_code || user.location.zip_code
+        user.location.state = req.body.state || user.location.state
+        user.location.country = req.body.country || user.location.country
         user.mobile = req.body.mobile || user.mobile
         user.telephone = req.body.telephone || user.telephone
         user.email = req.body.email || user.email
@@ -170,12 +170,18 @@ const getUserById = asyncHandler( async (req, res) => {
 
 
 // @desc    Get all user 
-// @route   GET /api/users/:id
+// @route   GET /api/admin/userslist
 // @access  Private / Admin
 
 const getAllUsers = asyncHandler( async (req, res) => {
-    const users = await User.find({})
-    res.json({users})
+    const users = await User.find()
+
+    if(users) {
+        res.json(users)
+    } else {
+        res.status(400)
+        throw new Error('No users found!!')
+    } 
 })
 
 
@@ -189,12 +195,12 @@ const updateUser = asyncHandler( async (req, res) => {
     if(user) {
         user.firstname = req.body.firstname || user.firstname
         user.lastname = req.body.lastname || user.lastname
-        user.address.address = req.body.address.address || user.address.address
-        user.address.addressTwo = req.body.address.addressTwo || user.address.addressTwo
-        user.address.city = req.body.address.city || user.address.city
-        user.address.zip_code = req.body.address.zip_code || user.address.zip_code
-        user.address.state = req.body.address.state || user.address.state
-        user.address.country = req.body.address.country || user.address.country
+        user.location.address = req.body.address || user.location.address
+        user.address.addressTwo = req.body.addressTwo || user.location.addressTwo
+        user.location.city = req.body.city || user.location.city
+        user.location.zip_code = req.body.zip_code || user.location.zip_code
+        user.location.state = req.body.state || user.location.state
+        user.location.country = req.body.country || user.location.country
         user.email = req.body.email || user.email
         user.telephone = req.body.telephone || user.telephone
         user.email = req.body.email || user.email
@@ -262,7 +268,7 @@ const deleteResume = asyncHandler( async (req, res) => {
         res.status(400)
         throw new Error('Invalid file data!')
     } 
-})
+}) 
 
 
 module.exports = {registerNewUser, loginUser, getUserProfile, updateUserProfile, deleteUser, getUserById, updateUser, getAllUsers, addNewResume, deleteResume}
