@@ -201,5 +201,19 @@ const addNewCoverletter = asyncHandler( async (req, res) => {
     } 
 })
 
+// @desc    get all applications
+// @route   PUT /api/applications/admin/applicationslist
+// @access  Private / Admin
 
-module.exports = {createNewApplication, getAllMyApplications, getApplicationById, deleteApplication, updateApplication, statusUpdate, addNewCoverletter}
+const getAllApplications = asyncHandler( async (req, res) => {
+    const applications = await Application.find().populate('applicant').populate( { path: 'company', populate:'employer' })
+    
+    if(applications) {
+        res.json(applications)
+    } else {
+        res.status(400)
+        throw new Error('No applications found!!')
+    } 
+})
+
+module.exports = {createNewApplication, getAllMyApplications, getApplicationById, deleteApplication, updateApplication, statusUpdate, addNewCoverletter, getAllApplications}
