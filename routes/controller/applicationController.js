@@ -33,16 +33,12 @@ const createNewApplication = asyncHandler( async (req, res) => {
         status, 
         source,
         applicant: req.user._id
-    })
-
-    //const user = await User.findById(req.user._id)
-    
+    })    
 
     if(application) {
         const updatedUser = await User.findOneAndUpdate({_id: req.user._id},{$push: {applications: application._id}})
         const updatedEmployer = await Employer.findOneAndUpdate({_id: employer},{$push: {applications: application._id}})
-        //user.applications.push(application)
-        //await user.save()
+         
         if(updatedUser && updatedEmployer){
             res.status(200).json({
                 id: application._id,
@@ -92,9 +88,8 @@ const getAllMyApplications = asyncHandler( async (req, res) => {
 // @access  Private
 
 const getApplicationById = asyncHandler( async (req, res) => {
-    console.log(req.params)
-    const application = await Application.findById(req.params.id).populate( { path: 'employer', populate: 'employer' })
-    console.log(application)
+    const application = await Application.findById(req.params.id).populate( { path: 'company', populate: 'employer' })
+    
     if(application) {
         res.json(application)
     } else {
@@ -190,9 +185,12 @@ const deleteApplication = asyncHandler( async (req, res) => {
 
 const addNewCoverletter = asyncHandler( async (req, res) => {
     const application = await Application.findById(req.params.id)
-   
+    
     if(application) {
-        application.coverletter = req.body.coverletter
+        application.coverletter.content = req.body.base64
+        application.coverletter.date = Date.now()
+        application.coverletter.name = req.body.name
+        application.coverletter.type = req.body.type
 
         const updatedApplication = application.save()
 

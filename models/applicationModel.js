@@ -65,8 +65,13 @@ const applicationSchema = mongoose.Schema({
             required: false,
             default: ""
         },
-        date: {
+        type: {
             type: String,
+            required: false,
+            default: ""
+        },
+        date: {
+            type: String, 
             required: false,
             default: ""
         }
