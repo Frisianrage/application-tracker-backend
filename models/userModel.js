@@ -31,7 +31,10 @@ const userSchema = mongoose.Schema({
         zip_code: {type: String,
                 required: false 
                 },
-        city: {type: String,
+        city:   {type: String,
+                required: false 
+                },
+        state: {type: String,
                 required: false 
                 },
         country: {type: String,

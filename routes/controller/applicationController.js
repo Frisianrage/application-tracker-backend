@@ -1,5 +1,6 @@
 const Application = require('../../models/applicationModel')
 const User = require('../../models/userModel')
+const Employer = require('../../models/employerModel')
 const asyncHandler = require('express-async-handler')
 
 
@@ -8,7 +9,7 @@ const asyncHandler = require('express-async-handler')
 // @access  Private
 
 const createNewApplication = asyncHandler( async (req, res) => {
-    const {jobtitle, jobdescription, salary, remote, location: {city, state, country}, employer: {employer, contactperson: {name, email, phone}}, coverletter, status, source} = req.body
+    const {jobtitle, jobdescription, salary, remote, location: {city, state, country}, company: {employer, contactperson: {name, email, phone}}, coverletter, status, source} = req.body
     
     const application = await Application.create({
         jobtitle, 
@@ -20,7 +21,7 @@ const createNewApplication = asyncHandler( async (req, res) => {
             state,
             country
         }, 
-        employer: {
+        company: {
             employer,
             contactperson: {
                 name,
@@ -34,21 +35,24 @@ const createNewApplication = asyncHandler( async (req, res) => {
         applicant: req.user._id
     })
 
-    const user = await User.findById(req.user._id)
+    //const user = await User.findById(req.user._id)
+    
 
-    if(application && user) {
-
-        user.applications.push(application)
-        await user.save()
-
-        res.status(200).json({
-            id: application._id,
-            jobtitle: application.jobtitle,
-            jobdescription: application.jobdescription,
-            status: application.status,
-            createdAt: application.createdAt,
-            updatedAt: application.updatedAt
-        })
+    if(application) {
+        const updatedUser = await User.findOneAndUpdate({_id: req.user._id},{$push: {applications: application._id}})
+        const updatedEmployer = await Employer.findOneAndUpdate({_id: employer},{$push: {applications: application._id}})
+        //user.applications.push(application)
+        //await user.save()
+        if(updatedUser && updatedEmployer){
+            res.status(200).json({
+                id: application._id,
+                jobtitle: application.jobtitle,
+                jobdescription: application.jobdescription,
+                status: application.status,
+                createdAt: application.createdAt,
+                updatedAt: application.updatedAt
+            })
+        }
     } else {
         res.status(400)
         throw new Error('Invalid application data!')
@@ -63,7 +67,7 @@ const createNewApplication = asyncHandler( async (req, res) => {
 const getAllMyApplications = asyncHandler( async (req, res) => {
     
     try {
-        const user = await User.findById(req.user._id).select('-password').populate("applications").populate( { path: 'applications', populate: { path: 'employer', populate: 'employer' } })
+        const user = await User.findById(req.user._id).select('-password').populate("applications").populate( { path: 'applications', populate: { path: 'company', populate: 'employer' } })
 
         if(user) {
             res.json({
@@ -158,7 +162,7 @@ const statusUpdate = asyncHandler( async (req, res) => {
 
 // @desc    Delete application 
 // @route   PUT /api/applications/:id
-// @access  Private /Admin
+// @access  Private
 
 const deleteApplication = asyncHandler( async (req, res) => {
     const application = await Application.findById(req.params.id)

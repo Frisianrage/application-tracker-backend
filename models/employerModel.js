@@ -6,7 +6,7 @@ const employerSchema = mongoose.Schema({
         required: true,
         default: ""
     },
-    address: {
+    location: {
         address: {type: String,
                 required: false 
                 },
@@ -17,6 +17,9 @@ const employerSchema = mongoose.Schema({
                 required: false 
                 },
         city: {type: String,
+                required: false 
+                },
+        state: {type: String,
                 required: false 
                 },
         country: {type: String,

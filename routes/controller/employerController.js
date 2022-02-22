@@ -18,13 +18,29 @@ const createNewEmployer = asyncHandler( async (req, res) => {
 
     const employer = await Employer.create({
         user: req.user._id,
-        companyname
+        companyname: req.body.companyname, 
+        location: {
+            address: req.body.location.address,
+            addressTwo: req.body.location.addressTwo, 
+            city: req.body.location.city, 
+            zip_code: req.body.location.zip_code, 
+            state: req.body.location.state, 
+            country: req.body.location.country, 
+        },
+        mobile: req.body.mobile,
+        telephone: req.body.telephone, 
+        email: req.body.email,
+        applications: [] 
     })
 
     if(employer) {
         res.status(200).json({
             id: employer._id,
-            companyname: employer.companyname
+            companyname: employer.companyname,
+            city: employer.location.city,
+            state: employer.location.state,
+            country: employer.location.country,
+            createdAt: employer.createdAt
         })
     } else {
         res.status(400)
@@ -32,12 +48,28 @@ const createNewEmployer = asyncHandler( async (req, res) => {
     }
 })
 
-
 // @desc    Get all my employers 
-// @route   GET /api/employers
+// @route   GET /api/employers/
 // @access  Private
 
 const getAllMyEmployer = asyncHandler( async (req, res) => {
+    
+    const employers = await Employer.find({user: req.user._id})
+
+    if(employers){
+        res.json({employers})
+    } else {
+        res.status(404)
+        throw new Error('User not found!')
+    }  
+})
+
+
+// @desc    Search for employers 
+// @route   GET /api/employers/search/:keyword
+// @access  Private
+
+const searchEmployer = asyncHandler( async (req, res) => {
     
     console.log(req.params)
     /*const pageSize = 10
@@ -66,11 +98,12 @@ const updateEmployerProfile = asyncHandler( async (req, res) => {
 
     if(employer) {
         employer.companyname = req.body.companyname || employer.companyname
-        employer.address.street = req.body.address.street || employer.address.street
-        employer.address.house_no = req.body.address.house_no || employer.address.house_no
-        employer.address.city = req.body.address.city || employer.address.city
-        employer.address.zip_code = req.body.address.zip_code || employer.address.zip_code
-        employer.address.country = req.body.address.country || employer.address.country
+        employer.location.address = req.body.location.address || employer.location.address
+        employer.location.addressTwo = req.body.location.addressTwo || employer.location.addressTwo
+        employer.location.city = req.body.location.city || employer.location.city
+        employer.location.zip_code = req.body.location.zip_code || employer.location.zip_code
+        employer.location.state = req.body.location.state || employer.location.state
+        employer.location.country = req.body.location.country || employer.location.country
         employer.mobile = req.body.mobile || employer.mobile
         employer.telephone = req.body.telephone || employer.telephone
         employer.email = req.body.email || employer.email
@@ -89,8 +122,8 @@ const updateEmployerProfile = asyncHandler( async (req, res) => {
 
 
 // @desc    Delete employer 
-// @route   PUT /api/employers/:id
-// @access  Private /Admin
+// @route   PUT /api/employers/profile/:id
+// @access  Private
 
 const deleteEmployer = asyncHandler( async (req, res) => {
     const employer = await Employer.findById(req.params.id)
@@ -121,4 +154,4 @@ const getEmployerById = asyncHandler( async (req, res) => {
 })
 
 
-module.exports = {createNewEmployer, getAllMyEmployer, getEmployerById, updateEmployerProfile, deleteEmployer}
+module.exports = {createNewEmployer, getAllMyEmployer, getEmployerById, updateEmployerProfile, deleteEmployer, searchEmployer}

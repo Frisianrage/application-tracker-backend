@@ -35,7 +35,7 @@ const applicationSchema = mongoose.Schema({
                 required: false 
                 }
     },
-    employer: {
+    company: {
         employer: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,

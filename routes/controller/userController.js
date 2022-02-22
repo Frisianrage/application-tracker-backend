@@ -111,7 +111,8 @@ const updateUserProfile = asyncHandler( async (req, res) => {
         user.address.address = req.body.address || user.address.address
         user.address.addressTwo = req.body.addressTwo || user.address.addressTwo
         user.address.city = req.body.city || user.address.city
-        user.address.zip_code = req.body.zipCode || user.address.zip_code
+        user.address.zip_code = req.body.zip_code || user.address.zip_code
+        user.address.state = req.body.state || user.address.state
         user.address.country = req.body.country || user.address.country
         user.mobile = req.body.mobile || user.mobile
         user.telephone = req.body.telephone || user.telephone
@@ -192,6 +193,8 @@ const updateUser = asyncHandler( async (req, res) => {
         user.address.addressTwo = req.body.address.addressTwo || user.address.addressTwo
         user.address.city = req.body.address.city || user.address.city
         user.address.zip_code = req.body.address.zip_code || user.address.zip_code
+        user.address.state = req.body.address.state || user.address.state
+        user.address.country = req.body.address.country || user.address.country
         user.email = req.body.email || user.email
         user.telephone = req.body.telephone || user.telephone
         user.email = req.body.email || user.email
