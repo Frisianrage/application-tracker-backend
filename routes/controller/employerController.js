@@ -95,15 +95,15 @@ const searchEmployer = asyncHandler( async (req, res) => {
 
 const updateEmployerProfile = asyncHandler( async (req, res) => {
     const employer = await Employer.findById(req.params.id)
-
+ 
     if(employer) {
         employer.companyname = req.body.companyname || employer.companyname
-        employer.location.address = req.body.location.address || employer.location.address
-        employer.location.addressTwo = req.body.location.addressTwo || employer.location.addressTwo
-        employer.location.city = req.body.location.city || employer.location.city
-        employer.location.zip_code = req.body.location.zip_code || employer.location.zip_code
-        employer.location.state = req.body.location.state || employer.location.state
-        employer.location.country = req.body.location.country || employer.location.country
+        employer.location.address = req.body.address || employer.location.address
+        employer.location.addressTwo = req.body.addressTwo || employer.location.addressTwo
+        employer.location.city = req.body.city || employer.location.city
+        employer.location.zip_code = req.body.zip_code || employer.location.zip_code
+        employer.location.state = req.body.state || employer.location.state
+        employer.location.country = req.body.country || employer.location.country
         employer.mobile = req.body.mobile || employer.mobile
         employer.telephone = req.body.telephone || employer.telephone
         employer.email = req.body.email || employer.email
@@ -153,5 +153,20 @@ const getEmployerById = asyncHandler( async (req, res) => {
     }
 })
 
+// @desc    Get all employer 
+// @route   GET /api/employers/admin/employerlist
+// @access  Private / Admin
 
-module.exports = {createNewEmployer, getAllMyEmployer, getEmployerById, updateEmployerProfile, deleteEmployer, searchEmployer}
+const getAllEmployer = asyncHandler( async (req, res) => {
+    const employers = await Employer.find().populate('user')
+
+    if(employers) {
+        res.json(employers)
+    } else {
+        res.status(404)
+        throw new Error('Employer not found!')
+    }
+})
+
+
+module.exports = {createNewEmployer, getAllMyEmployer, getEmployerById, updateEmployerProfile, deleteEmployer, searchEmployer, getAllEmployer}
