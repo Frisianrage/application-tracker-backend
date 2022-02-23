@@ -1,4 +1,5 @@
 const Employer = require('../../models/employerModel')
+const User = require('../../models/userModel')
 const asyncHandler = require('express-async-handler')
 
 
@@ -168,5 +169,49 @@ const getAllEmployer = asyncHandler( async (req, res) => {
     }
 })
 
+// @desc    Get most applied employer 
+// @route   GET /api/mostapplied
+// @access  Private
 
-module.exports = {createNewEmployer, getAllMyEmployer, getEmployerById, updateEmployerProfile, deleteEmployer, searchEmployer, getAllEmployer}
+const mostAppliedTo = asyncHandler( async (req, res) => {
+    const employers = await Employer.find({user: req.user._id})
+
+    if(employers) {
+        res.json(employers)
+    } else {
+        res.status(404)
+        throw new Error('Employer not found!')
+    }
+})
+
+// @desc    Get last changed employer 
+// @route   GET /api/lastchanged
+// @access  Private
+
+const lastChangedEmployer = asyncHandler( async (req, res) => {
+    const employer = await Employer.find({user: req.user._id}).sort({updatedAt: 'desc'}).limit(1)
+
+    //const user = await User.findById(req.user._id).select('-password')
+    //.populate({path: 'applications', populate: { path: 'company', populate:'employer',  options: {sort: {updatedAt: 'desc'}, limit: 1} }})
+    
+    if(employer) {
+        res.json(employer)
+    } else {
+        res.status(400)
+        throw new Error('No employer found!!')
+    }
+    
+})
+
+
+module.exports = {
+    createNewEmployer, 
+    getAllMyEmployer, 
+    getEmployerById, 
+    updateEmployerProfile, 
+    deleteEmployer, 
+    searchEmployer, 
+    getAllEmployer,
+    mostAppliedTo,
+    lastChangedEmployer
+}

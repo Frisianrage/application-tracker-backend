@@ -63,7 +63,10 @@ const createNewApplication = asyncHandler( async (req, res) => {
 const getAllMyApplications = asyncHandler( async (req, res) => {
     
     try {
-        const user = await User.findById(req.user._id).select('-password').populate("applications").populate( { path: 'applications', populate: { path: 'company', populate: 'employer' } })
+        const user = await User.findById(req.user._id)
+        .select('-password')
+        .populate("applications")
+        .populate( { path: 'applications', populate: { path: 'company', populate: 'employer' } })
 
         if(user) {
             res.json({
@@ -216,4 +219,47 @@ const getAllApplications = asyncHandler( async (req, res) => {
     } 
 })
 
-module.exports = {createNewApplication, getAllMyApplications, getApplicationById, deleteApplication, updateApplication, statusUpdate, addNewCoverletter, getAllApplications}
+// @desc    get most recent applications
+// @route   GET /api/applications/recent
+// @access  Private
+
+const getRecentApplications = asyncHandler( async (req, res) => {
+    const user = await User.findById(req.user._id).select('-password')
+    .populate({path: 'applications', options: {sort: {createdAt: 'desc'}, limit: 5}, populate: { path: 'company', populate:'employer' }})
+    
+    if(user) {
+        res.json(user)
+    } else {
+        res.status(400)
+        throw new Error('No user found!!')
+    }
+})
+
+// @desc    last changed application
+// @route   GET /api/applications/lastchanged
+// @access  Private
+
+const getLastChangedApplication = asyncHandler( async (req, res) => {
+    const user = await User.findById(req.user._id).select('-password')
+    .populate({path: 'applications', options: {sort: {updatedAt: 'desc'}, limit: 1}, populate: { path: 'company', populate:'employer' }})
+    
+    if(user) {
+        res.json(user)
+    } else {
+        res.status(400)
+        throw new Error('No user found!!')
+    }
+})
+
+module.exports = {
+    createNewApplication, 
+    getAllMyApplications, 
+    getApplicationById, 
+    deleteApplication, 
+    updateApplication, 
+    statusUpdate, 
+    addNewCoverletter, 
+    getAllApplications,
+    getRecentApplications,
+    getLastChangedApplication
+}
