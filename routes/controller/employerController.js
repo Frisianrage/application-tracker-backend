@@ -55,7 +55,7 @@ const createNewEmployer = asyncHandler( async (req, res) => {
 
 const getAllMyEmployer = asyncHandler( async (req, res) => {
     
-    const employers = await Employer.find({user: req.user._id})
+    const employers = await Employer.find({user: req.user._id}).sort({companyname: 'asc'})
 
     if(employers){
         res.json({employers})
@@ -174,7 +174,7 @@ const getAllEmployer = asyncHandler( async (req, res) => {
 // @access  Private
 
 const mostAppliedTo = asyncHandler( async (req, res) => {
-    const employers = await Employer.find({user: req.user._id})
+    const employers = await Employer.find({user: req.user._id}).sort({applicationCount: 'desc'}).limit(5)
 
     if(employers) {
         res.json(employers)

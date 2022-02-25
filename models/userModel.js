@@ -81,7 +81,12 @@ const userSchema = mongoose.Schema({
             required: false,
             ref: 'Application',
             default: null
-    }]
+    }],
+    applicationCount: {
+            type: Number,
+            required: false,
+            default: 0
+    }
 }, {
     timestamps: true
 })

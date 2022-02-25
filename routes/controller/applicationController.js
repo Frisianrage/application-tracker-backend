@@ -11,6 +11,7 @@ const asyncHandler = require('express-async-handler')
 const createNewApplication = asyncHandler( async (req, res) => {
     const {jobtitle, jobdescription, salary, remote, location: {city, state, country}, company: {employer, contactperson: {name, email, phone}}, coverletter, status, source} = req.body
     
+    //creates the new application and saves it in the database
     const application = await Application.create({
         jobtitle, 
         jobdescription, 
@@ -36,9 +37,13 @@ const createNewApplication = asyncHandler( async (req, res) => {
     })    
 
     if(application) {
-        const updatedUser = await User.findOneAndUpdate({_id: req.user._id},{$push: {applications: application._id}})
-        const updatedEmployer = await Employer.findOneAndUpdate({_id: employer},{$push: {applications: application._id}})
-         
+        //finds the user and adds the application to the profile
+        const updatedUser = await User.findOneAndUpdate({_id: req.user._id},{$push: {applications: application._id}, applicationCount: applicationCount + 1 })
+        
+        //finds the employer and adds the application to the profile
+        const updatedEmployer = await Employer.findOneAndUpdate({_id: employer},{$push: {applications: application._id}, applicationCount: applicationCount + 1})
+        
+        
         if(updatedUser && updatedEmployer){
             res.status(200).json({
                 id: application._id,
@@ -66,7 +71,7 @@ const getAllMyApplications = asyncHandler( async (req, res) => {
         const user = await User.findById(req.user._id)
         .select('-password')
         .populate("applications")
-        .populate( { path: 'applications', populate: { path: 'company', populate: 'employer' } })
+        .populate( { path: 'applications', populate: { path: 'company', populate: 'employer' }, options: {sort : {createdAt: 'desc'}} })
 
         if(user) {
             res.json({
@@ -91,6 +96,7 @@ const getAllMyApplications = asyncHandler( async (req, res) => {
 // @access  Private
 
 const getApplicationById = asyncHandler( async (req, res) => {
+    //finds the application by id and returns it including the company that was applied to
     const application = await Application.findById(req.params.id).populate( { path: 'company', populate: 'employer' })
     
     if(application) {
@@ -165,11 +171,18 @@ const statusUpdate = asyncHandler( async (req, res) => {
 const deleteApplication = asyncHandler( async (req, res) => {
     const application = await Application.findById(req.params.id)
     const user = await User.findById(req.user._id)
+    const employer = await Employer.find(req.params.employerid)
 
-    if(application && user) {
+    if(application && user && employer) {
         //deleting the application from the user profile
         user.applications = user.applications.filter(app => app != req.params.id)
+        user.applicationCount -= 1
         await user.save()
+
+        //deleting the application from the employer profile
+        employer.applications = employer.applications.filter(app => app != req.params.id)
+        employer.applicationCount -= 1
+        await employer.save()
 
         //deleteing the actual application
         await application.remove()
