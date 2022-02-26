@@ -9,9 +9,9 @@ const asyncHandler = require('express-async-handler')
 
 const createNewEmployer = asyncHandler( async (req, res) => {
     const { companyname } = req.body
+   
+    const employerExisted = await Employer.findOne({companyname, user: req.user._id})
     
-    const employerExisted = await Employer.findOne({companyname})
-
     if(employerExisted) {
         res.status(400)
         throw new Error('Employer already exists!')
@@ -72,10 +72,6 @@ const getAllMyEmployer = asyncHandler( async (req, res) => {
 
 const searchEmployer = asyncHandler( async (req, res) => {
     
-    console.log(req.params)
-    /*const pageSize = 10
-    const page = Number(req.query.pageNumber) || 1
-*/
     const keyword = req.params.keyword ? {
         companyname: {
             $regex: req.params.keyword,
@@ -85,7 +81,6 @@ const searchEmployer = asyncHandler( async (req, res) => {
 
     const employers = await Employer.find({user: req.user._id, ...keyword})
   
-
     res.json({employers})
 })
 

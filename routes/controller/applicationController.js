@@ -38,10 +38,10 @@ const createNewApplication = asyncHandler( async (req, res) => {
 
     if(application) {
         //finds the user and adds the application to the profile
-        const updatedUser = await User.findOneAndUpdate({_id: req.user._id},{$push: {applications: application._id}, applicationCount: applicationCount + 1 })
+        const updatedUser = await User.findOneAndUpdate({_id: req.user._id},{$push: {applications: application._id}, $inc: {applicationCount: 1} })
         
         //finds the employer and adds the application to the profile
-        const updatedEmployer = await Employer.findOneAndUpdate({_id: employer},{$push: {applications: application._id}, applicationCount: applicationCount + 1})
+        const updatedEmployer = await Employer.findOneAndUpdate({_id: employer},{$push: {applications: application._id}, $inc: {applicationCount: 1}})
         
         
         if(updatedUser && updatedEmployer){

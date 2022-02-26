@@ -103,7 +103,6 @@ const getUserProfile = asyncHandler( async (req, res) => {
 
 const updateUserProfile = asyncHandler( async (req, res) => {
     const user = await User.findById(req.user._id)
-    console.log(req.body)
 
     if(user) {
         user.firstname = req.body.firstName || user.firstname
@@ -159,7 +158,7 @@ const deleteUser = asyncHandler( async (req, res) => {
 
 const getUserById = asyncHandler( async (req, res) => {
     const user = await User.findById(req.params.id)
-    console.log(user)
+    
     if(user) {
         res.json(user)
     } else {
@@ -232,7 +231,7 @@ const updateUser = asyncHandler( async (req, res) => {
 
 const addNewResume = asyncHandler( async (req, res) => {
     const user = await User.findById(req.user._id)
-    console.log(user)
+    
     if(user) {
         user.resume.content = req.body.base64
         user.resume.date = Date.now()
@@ -240,7 +239,7 @@ const addNewResume = asyncHandler( async (req, res) => {
         user.resume.type = req.body.type
 
         const updatedUser = user.save()
-        console.log(updatedUser)
+        
         res.json(updatedUser)
     } else {
         res.status(400)
@@ -254,7 +253,7 @@ const addNewResume = asyncHandler( async (req, res) => {
 
 const deleteResume = asyncHandler( async (req, res) => {
     const user = await User.findById(req.user._id)
-    console.log(user)
+    
     if(user) {
         user.resume.content = req.body.content
         user.resume.date = req.body.date
@@ -262,7 +261,7 @@ const deleteResume = asyncHandler( async (req, res) => {
         user.resume.type = req.body.type
 
         const updatedUser = user.save()
-        console.log(updatedUser)
+        
         res.json(updatedUser)
     } else {
         res.status(400)
